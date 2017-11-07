@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
+SUBDIRS +=            \
+    lib/libsgp4       \
     space-tracker-lib \
     space-tracker-app
