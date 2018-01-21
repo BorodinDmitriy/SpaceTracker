@@ -12,6 +12,7 @@
 #include "tleparser.h"
 #include "fstream"
 #include "information.h"
+#include "webintersingleton.h"
 
 class Loader
 {
@@ -20,11 +21,9 @@ class Loader
         ~Loader();
         QList<Information> loadAllTLE(const Date &dt);
         QList<Information> loadFileTLE(const Date &dt, std::string fn);
-        QList<Information> loadAllSSR(const Date &);
         QList<Information> loadTLE(const unsigned long &id, const Date &dt);
-        QList<Information> loadSSR(const unsigned long &id, const Date &);
     private:
-       WebInter *win;
+       //WebInterSingleton &win;
        DBInter *bd;
        TleParser *pars;
 };

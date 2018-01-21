@@ -55,62 +55,62 @@ const int Model::getNoradID()
 
 bool Model::getStringInformation(std::string *str1, std::string *str2)
 {
-    for (int i = buffer->count() - 1; i >= 0; i--)
-    {
-        if ((*buffer)[i].Type == TLEInfo)
-        {
-            (*str1) = (*buffer)[i].TLEstr1;
-            (*str2) = (*buffer)[i].TLEstr2;
-            return true;
-        }
+    QList<Information>::iterator iter = std::find_if((*buffer).begin(),(*buffer).end(), [] (const Information a) {
+        return a.Type == TLEInfo;
+    });
+
+    if ((*iter).Type) {
+        (*str1) = (*iter).TLEstr1;
+        (*str2) = (*iter).TLEstr2;
+        return true;
     }
     return false;
 }
 
 char *Model::getName()
 {
-    for(int i = buffer->count() - 1; i >= 0; i--)
-    {
-        if ((*buffer)[i].Type == TLEInfo)
-        {
-            return (*buffer)[i].TLEI.name;
-        }
+    QList<Information>::iterator iter = std::find_if((*buffer).begin(),(*buffer).end(), [] (const Information a) {
+        return a.Type == TLEInfo;
+    });
+
+    if ((*iter).Type) {
+        return (*iter).TLEI.name;
     }
     return "NONAME";
 }
 
 char Model::getTypeObject()
 {
-    for(int i = buffer->count() - 1; i >= 0; i--)
-    {
-        if ((*buffer)[i].Type == TLEInfo)
-        {   
-            return (*buffer)[i].TLEI.cl;
-        }
+    QList<Information>::iterator iter = std::find_if((*buffer).begin(),(*buffer).end(), [] (const Information a) {
+        return a.Type == TLEInfo;
+    });
+
+    if ((*iter).Type) {
+        return (*iter).TLEI.cl;
     }
     return '\0';
 }
 
 double Model::getAngle()
 {
-    for(int i = buffer->count() - 1; i >= 0; i--)
-    {
-        if ((*buffer)[i].Type == TLEInfo)
-        {
-            return (*buffer)[i].TLEI.incl;
-        }
+    QList<Information>::iterator iter = std::find_if((*buffer).begin(),(*buffer).end(), [] (const Information a) {
+        return a.Type == TLEInfo;
+    });
+
+    if ((*iter).Type) {
+        return (*iter).TLEI.incl;
     }
     return 0;
 }
 
 double Model::getPeriod()
 {
-    for(int i = buffer->count() - 1; i >= 0; i--)
-    {
-        if ((*buffer)[i].Type == TLEInfo)
-        {
-            return 1 / (*buffer)[i].TLEI.freq;
-        }
+    QList<Information>::iterator iter = std::find_if((*buffer).begin(),(*buffer).end(), [] (const Information a) {
+        return a.Type == TLEInfo;
+    });
+
+    if ((*iter).Type) {
+        return 1 / (*iter).TLEI.freq;;
     }
     return 0;
 }

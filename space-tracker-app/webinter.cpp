@@ -1,4 +1,6 @@
 #include "webinter.h"
+#include "config.h"
+
 
 static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -26,7 +28,7 @@ WebInter::WebInter()
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_URL, "https://www.space-track.org/ajaxauth/login"))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_URL, LOGIN_URL))
     {
         throw CurlError();
     }
@@ -34,7 +36,7 @@ WebInter::WebInter()
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "identity=catkiller95@gmail.com&password=catkiller19950214"))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_POSTFIELDS, LOGIN_PARAMETERS))
     {
         throw CurlError();
     }
@@ -42,23 +44,23 @@ WebInter::WebInter()
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cookie"))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_COOKIEJAR, COOKIE_JAR))
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cookie"))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_COOKIEFILE, COOKIE_TYPE))
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0"))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_USERAGENT, CURL_AGENT))
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl,  CURLOPT_SSLCERTTYPE, "PEM"))
+    if (CURLE_OK != curl_easy_setopt(curl,  CURLOPT_SSLCERTTYPE, CURL_CERT_TYPE))
     {
         throw CurlError();
     }
-    if (CURLE_OK != curl_easy_setopt(curl,  CURLOPT_SSLCERT, "D:/QtVit/Qt5.1.0/Tools/QtCreator/bin/TEST/bookingcar.pem"))
+    if (CURLE_OK != curl_easy_setopt(curl,  CURLOPT_SSLCERT, CURL_CERT_PATH))
     {
         throw CurlError();
     }
@@ -70,7 +72,6 @@ WebInter::WebInter()
     {
         throw CurlError();
     }
-    //std::cout<<"object created";
     if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback))
     {
         throw CurlError();
@@ -86,6 +87,26 @@ WebInter::~WebInter()
     return;
 }
 
+std::string WebInter::formString(const Date &dt, int type, const unsigned long id = 0)
+{
+    QDate d1(dt.Year, dt.Mounth, dt.Day);
+    QDate d2 = d1.addDays(-1);
+    std::string fsd = d1.toString(QString("yyyy-MM-dd")).toStdString();
+    std::string scd = d2.toString(QString("yyyy-MM-dd")).toStdString();
+
+    std::string q = LOAD_TLE_URL;
+    q += scd;
+    q += "--";
+    q += fsd;
+    if (type == 1) {
+       q += "/TLE_LINE1/~~1%";
+       q += std::to_string(id);
+    }
+    q += LIMIT_LOAD_TLE_STRING;
+
+    return q;
+}
+
 
 QList <Information> WebInter::loadAllTLE(const Date &dt)
 {
@@ -94,16 +115,7 @@ QList <Information> WebInter::loadAllTLE(const Date &dt)
         free(chunk.memory);
         chunk.memory = 0;
     }
-    //std::string date = "";
-    //date += atoi(dt.Day);
-    //date += ":";
-    //date += atoi(dt.Mounth);
-    //date += ":";
-    //date += atoi(dt.Year);
-    QDate d1(dt.Year, dt.Mounth, dt.Day);
-    QDate d2 = d1.addDays(-1);
-    std::string fsd = d1.toString(QString("yyyy-MM-dd")).toStdString();
-    std::string scd = d2.toString(QString("yyyy-MM-dd")).toStdString();
+
     chunk.memory = (char *)malloc(1);  /* will be grown as needed by the realloc above */
     chunk.size = 0;
     if (CURLE_OK != curl_easy_setopt(curl,  CURLOPT_WRITEDATA, (void *)&chunk))
@@ -111,24 +123,16 @@ QList <Information> WebInter::loadAllTLE(const Date &dt)
         throw CurlError();
     }
     QList<Information> resInfo;
-    std::string q = "https://www.space-track.org/basicspacedata/query/class/tle_publish/PUBLISH_EPOCH/";
-    q += scd;
-    q += "--";
-    q += fsd;
-    q += "/orderby/PUBLISH_EPOCH%20asc/limit/10/format/tle/metadata/false";
+
+    std::string q = formString(dt,0);
     if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_URL, q.c_str()))
     {
         throw CurlError();
     }
-    //curl_easy_setopt(curl, CURLOPT_URL, "https://www.space-track.org/basicspacedata/query/class/tle_latest/limit/10/format/3le");
-    //https://www.space-track.org/basicspacedata/query/class/boxscore/format/stream
-    //curl_easy_setopt(curl, CURLOPT_URL, "https://www.space-track.org/basicspacedata/query/class/boxscore/format/json");
     if (CURLE_OK != curl_easy_perform(curl))
     {
         throw CurlErrorR(errbuf);
     }
-    //std::cout<<"#######################IN CHUNK #########################\n";
-    //std::cout<<chunk.memory;
     if (!strcmp(errmes, chunk.memory))
     {
         throw LoginError();
@@ -138,17 +142,6 @@ QList <Information> WebInter::loadAllTLE(const Date &dt)
     return resInfo;
 }
 
-QList<Information> WebInter::loadAllSSR(const Date &dt)
-{
-    QList<Information> resInfo;
-    return resInfo;
-}
-
-QList<Information> WebInter::loadSSR(const unsigned long &id, const Date &dt)
-{
-    QList<Information> resInfo;
-    return resInfo;
-}
 
 QList<Information> WebInter::loadTLE(const unsigned long &id, const Date &dt)
 {
@@ -157,16 +150,7 @@ QList<Information> WebInter::loadTLE(const unsigned long &id, const Date &dt)
         free(chunk.memory);
         chunk.memory = 0;
     }
-    //std::string date = "";
-    //date += atoi(dt.Day);
-    //date += ":";
-    //date += atoi(dt.Mounth);
-    //date += ":";
-    //date += atoi(dt.Year);
-    QDate d1(dt.Year, dt.Mounth, dt.Day);
-    QDate d2 = d1.addDays(-1);
-    std::string fsd = d1.toString(QString("yyyy-MM-dd")).toStdString();
-    std::string scd = d2.toString(QString("yyyy-MM-dd")).toStdString();
+
     chunk.memory = (char *)malloc(1);  /* will be grown as needed by the realloc above */
     chunk.size = 0;
     if(CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk))
@@ -174,26 +158,17 @@ QList<Information> WebInter::loadTLE(const unsigned long &id, const Date &dt)
         throw CurlError();
     }
     QList<struct Information> resInfo;
-    std::string q = "https://www.space-track.org/basicspacedata/query/class/tle_publish/PUBLISH_EPOCH/";
-    q += scd;
-    q += "--";
-    q += fsd;
-    q += "/TLE_LINE1/~~1%";
-    q += std::to_string(id);
-    q += "/orderby/PUBLISH_EPOCH%20asc/limit/10/format/tle/metadata/false";
+    std::string q = formString(dt,1,id);
     if(CURLE_OK != curl_easy_setopt(curl, CURLOPT_URL, q.c_str()))
     {
         throw CurlError();
     }
-    //curl_easy_setopt(curl, CURLOPT_URL, "https://www.space-track.org/basicspacedata/query/class/tle_latest/limit/10/format/3le");
-    //https://www.space-track.org/basicspacedata/query/class/boxscore/format/stream
-    //curl_easy_setopt(curl, CURLOPT_URL, "https://www.space-track.org/basicspacedata/query/class/boxscore/format/json");
+
     if(CURLE_OK != curl_easy_perform(curl))
     {
         throw CurlErrorR(errbuf);
     }
-    //std::cout<<"#######################IN CHUNK #########################\n";
-    //std::cout<<chunk.memory;
+
     TleParser pars1;
     resInfo = pars1.getTLE(chunk.memory);
     return resInfo;

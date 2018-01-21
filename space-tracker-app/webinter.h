@@ -11,6 +11,7 @@
 #include "information.h"
 #include "tleparser.h"
 #include "exceptions.h"
+#include "config.h"
 
 class WebInter
 {
@@ -18,18 +19,17 @@ class WebInter
         WebInter();
         ~WebInter();
         QList<Information> loadAllTLE(const Date &);
-        QList<Information> loadAllSSR(const Date &);
-        QList<Information> loadSSR(const unsigned long &id, const Date &);
         QList<Information> loadTLE(const unsigned long &id, const Date &);
     private:
         CURL *curl;
         CURLcode res;
         FILE *f;
         std::string str;
-        //size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp);
-        const char *errmes = "<html>\n<body>\n\t\n\t\t<p><p>You must be logged in to complete this action</p></p>\n\n</body>\n</html>";
+        const char *errmes = WEB_INTER_ERR_MESSAGE;
         char errbuf[CURL_ERROR_SIZE];
         MemoryStruct chunk;
+
+        std::string formString(const Date &dt, int type, const unsigned long id); // type=1 - один TLE, 0 - все
 };
 
 #endif // WEBINTER_H

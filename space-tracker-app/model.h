@@ -26,6 +26,7 @@ class Model
         char *getOGP();
         QList<Information> *getList();
         bool getStringInformation(std::string *str1, std::string *str2);
+        bool condition(QList<Information> buffer);
     private:        
         int noradID;
         QList<Information> *buffer;

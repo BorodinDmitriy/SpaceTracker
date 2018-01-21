@@ -5,6 +5,8 @@ TleParser::TleParser()
 
 }
 
+// Номер в комментариях ниже - номер элемента в строке TLE
+
 void TleParser::setName(const char *str, TLE &tl)
 {
     std::string buf;
@@ -21,7 +23,6 @@ void TleParser::setName(const char *str, TLE &tl)
         i++;
     }
     tl.name[i] = '\0';
-    //std::cout << "name:" << buf << '\n';
     return;
 }//1
 
@@ -32,7 +33,6 @@ void TleParser::setID(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "nor_id:" << buf << '\n';
     tl.nor_id = atoi(buf.c_str());
     return;
 }  //2
@@ -50,7 +50,6 @@ void TleParser::setINS(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "i_n_s:" << buf << '\n';
     int i = 0;
     while (buf[i])
     {
@@ -67,7 +66,6 @@ void TleParser::setINN(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "i_n_n:" << buf << '\n';
     tl.i_n_n = atoi(buf.c_str());
     return;
 }  //5
@@ -79,7 +77,6 @@ void TleParser::setINP(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "i_n_p:" << buf << '\n';
     int i = 0;
     while (buf[i])
     {
@@ -96,7 +93,6 @@ void TleParser::setEra(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "era:" << buf << '\n';
     int i = 0;
     while (buf[i])
     {
@@ -117,7 +113,6 @@ void TleParser::setEraT(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "era_t:" << buf << '\n';
     tl.era_t = std::strtod(buf.c_str(), 0);
     return;
 } //8
@@ -133,7 +128,6 @@ void TleParser::setDer(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "der:" << buf << '\n';
     tl.der = std::strtod(buf.c_str(), 0);
     return;
 }  //9
@@ -157,7 +151,6 @@ void TleParser::setDer2(const char *str, TLE &tl)
     {
         buf.insert(0, ".");
     }
-    //std::cout << "der2:" << buf << '\n';
     tl.der2 = std::strtod(buf.c_str(), 0);
     return;
 }  //10
@@ -181,7 +174,6 @@ void TleParser::setB(const char *str, TLE &tl)
     {
         buf.insert(0, ".");
     }
-    //std::cout << "b" << buf << '\n';
     tl.b = std::strtod(buf.c_str(), 0);
     return;
 }  //11
@@ -199,7 +191,6 @@ void TleParser::setNum(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "num:" << buf << '\n';
     tl.num = atoi(buf.c_str());
     return;
 }  //13
@@ -221,7 +212,6 @@ void TleParser::setIncl(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "incl:" << buf << '\n';
     tl.incl = std::strtod(buf.c_str(), 0);
     return;
 } //3
@@ -237,7 +227,6 @@ void TleParser::setLg(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "lg:" << buf << '\n';
     tl.lg = std::strtod(buf.c_str(), 0);
     return;
 }  //4
@@ -261,7 +250,6 @@ void TleParser::setEx(const char *str, TLE &tl)
     {
         buf.insert(0, ".");
     }
-    //std::cout << "ex:" << buf << '\n';
     tl.ex = std::strtod(buf.c_str(), 0);
     return;
 }  //5
@@ -277,7 +265,6 @@ void TleParser::setArgPer(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "arg_per:" << buf << '\n';
     tl.arg_per = std::strtod(buf.c_str(), 0);
     return;
 }//6
@@ -293,7 +280,6 @@ void TleParser::setAverAnom(const char *str, TLE &tl)
          }
          buf += str[i];
      }
-     //std::cout << "aver_anom:" << buf << '\n';
      tl.aver_anom = std::strtod(buf.c_str(), 0);
      return;
 }//7
@@ -309,7 +295,6 @@ void TleParser::setFreq(const char *str, TLE &tl)
         }
         buf += str[i];
     }
-    //std::cout << "freq:" << buf << '\n';
     tl.freq = std::strtod(buf.c_str(), 0);
     return;
 }//8
@@ -321,7 +306,6 @@ void TleParser::setEraNum(const char *str, TLE &tl)
     {
         buf += str[i];
     }
-    //std::cout << "era_num:" << buf << '\n';
     tl.era_num = atoi(buf.c_str());
     return;
 }//9
@@ -334,12 +318,6 @@ void TleParser::setSum2(const char *str, TLE &tl)
 
 void TleParser::firstStrPars(const char *str, Information &tl)
 {
-    /*int i = 0;
-    while(str[i]!='\n'){
-        std::cout<<str[i];
-        i++;
-    }
-    std::cout<<'\n';*/
     setName(str, tl.TLEI);
     return;
 }
@@ -391,14 +369,8 @@ void TleParser::thirdStrPars(const char *str, Information &tlIn)
 
 Information TleParser::getOneTLE(const char *str)
 {
-    //std::cout<<"##########################################\n";
     int i = 0;
     Information someInfo;
-    //first_str_pars(str,some_tle);
-    //while(str[i]!='\n'){
-    //    i++;
-    //}
-    //i++;
     secondStrPars((str + i), someInfo);
     while (str[i] != '\n')
     {
@@ -425,11 +397,6 @@ const char* TleParser::getNextTLE(const char *str)
     {
         return 0;
     }
-    /*i++;
-    if (str[i] == '\0')
-    {
-        return 0;
-    }*/
     return (str + i);
 }
 
@@ -443,7 +410,6 @@ QList<Information> TleParser::getTLE(const char *str)
     while (bufStr)
     {
         someInfo = getOneTLE(bufStr);
-        //someInfo.TLEI = someTLE;
         strcpy(someInfo.TLEI.name,"noname");
         str1 = someInfo.TLEstr1;
         str2 = someInfo.TLEstr2;
@@ -452,8 +418,6 @@ QList<Information> TleParser::getTLE(const char *str)
         {
                 resInfo.append(someInfo);
         }
-        //std::cout << some_tle.name << '\n';
-        //std::cout << some_tle.era_t << '\n';
         bufStr = getNextTLE(bufStr);
     }
     return resInfo;

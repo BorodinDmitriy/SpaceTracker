@@ -2,19 +2,8 @@
 
 Loader::Loader()
 {
-        win = 0;
         bd = 0;
         pars = 0;
-        try
-        {
-            win = new WebInter();
-        }
-        catch (BaseException &error)
-        {
-            win = 0;
-            QMessageBox helper;
-            helper.critical(NULL, "Error: Loader", error.what());
-        }
         try
         {
             bd = new DBInter();
@@ -40,16 +29,7 @@ Loader::Loader()
 
 Loader::~Loader()
 {
-    try
-    {
-        delete win;
-        delete bd;
-    }
-    catch (BaseException &error)
-    {
-        QMessageBox helper;
-        helper.critical(NULL, "Error: Loader", error.what());
-    }
+    delete bd;
 }
 
 QList<Information> Loader::loadAllTLE(const Date &dt)
@@ -60,9 +40,7 @@ QList<Information> Loader::loadAllTLE(const Date &dt)
     resInfo = bd->loadAllTLE(dt);
     if (resInfo.empty())
     {
-        if (win == 0)
-            return resInfo;
-        resInfo = win->loadAllTLE(dt);
+        resInfo = WebInterSingleton::Instance().loadAllTLE(dt);
         bd->addTLE(resInfo, dt);
     }
     return resInfo;
@@ -84,11 +62,6 @@ QList<Information> Loader::loadFileTLE(const Date &dt, std::string fn)
     return resInfo;
 }
 
-QList<Information> Loader::loadAllSSR(const Date &)
-{
-    QList<Information> resInfo;
-    return resInfo;
-}
 
 QList<Information> Loader::loadTLE(const unsigned long &id, const Date &dt)
 {
@@ -99,19 +72,12 @@ QList<Information> Loader::loadTLE(const unsigned long &id, const Date &dt)
     resInfo = bd->loadTLE(id, dt);
     if (resInfo.empty())
     {
-        bufResInfo = win->loadTLE(id, dt);
+        bufResInfo = WebInterSingleton::Instance().loadTLE(id, dt);
         bd->addTLE(bufResInfo, dt);
     }
     QList<Information>::iterator i;
-    for (i = bufResInfo.begin(); i != bufResInfo.end(); ++i)
-    {
-        resInfo.append(*i);
+    for (auto __begin = bufResInfo.begin(), __end = bufResInfo.end(); __begin != __end; ++__begin) {
+        resInfo.append(*__begin);
     }
-    return resInfo;
-}
-
-QList<Information> Loader::loadSSR(const unsigned long&  id, const Date&)
-{
-    QList<Information> resInfo;
     return resInfo;
 }

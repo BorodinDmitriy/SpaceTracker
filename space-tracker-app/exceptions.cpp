@@ -38,6 +38,11 @@ const char *VoidDelete::what() const throw()
     return "delete null pointer";
 }
 
+const char *CurlError::what() const throw()
+{
+    return "Something went wrong with CURL";
+}
+
 NullPointer::NullPointer()
 {
 
@@ -66,6 +71,19 @@ SQLiteError::SQLiteError()
 const char *SQLiteError::what() const throw()
 {
     return "SQLite error inquiry";
+}
+
+const char *FileExistError::what() const throw()
+{
+    return "File which you try to open doesn't exist.";
+}
+
+const char *OutOfMemoryError::what() const throw() {
+    return "Out of memory";
+}
+
+const char *LoginError::what() const throw() {
+    return "Cant login";
 }
 
 SGP4Error::SGP4Error()

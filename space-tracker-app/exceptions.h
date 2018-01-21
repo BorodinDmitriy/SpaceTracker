@@ -63,14 +63,13 @@ class FileExistError: public BaseException
 {
     public:
         FileExistError(){}
-        const char* what() const noexcept {return "File which you try to open doesn't exist.";}
+        const char* what() const throw();
 };
-
 class OutOfMemoryError: public BaseException
 {
     public:
         OutOfMemoryError(){}
-        const char* what() const noexcept {return "Out of memory";}
+        const char* what() const throw();
 };
 
 
@@ -78,7 +77,7 @@ class CurlError: public BaseException
 {
     public:
         CurlError(){}
-        const char* what() const noexcept {return "Something went wrong with CURL";}
+        const char* what() const throw();
 };
 
 
@@ -97,7 +96,7 @@ class LoginError: public BaseException
 {
     public:
         LoginError(){}
-        const char* what() const noexcept {return "Can't login";}
+        const char* what() const throw();
 };
 
 class SGP4Error : public BaseException
