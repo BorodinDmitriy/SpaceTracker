@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <string>
+#include <cstring>
 #include <iostream>
 
 #include "information.h"
@@ -42,6 +43,9 @@ class TleParser
         void setFreq(const char *str, TLE &tl);//8
         void setEraNum(const char *str, TLE &tl);//9
         void setSum2(const char *str, TLE &tl);//10
+        std::string formParsingNumberString(const char *str, int startPosition, int finishPosition);
+        std::string formParsingTextString(const char *str, int startPosition, int finishPosition);
+        std::string processFloatString(std::string &str);
 };
 
 #endif // tleparser_H

@@ -1,5 +1,6 @@
 #include <string>
 #include <cstdio>
+#include "config.h"
 
 // Формат TLE
 // 1 00150U 61015AL  18020.36587778 -.00000036  00000-0  39783-4 0  9995
@@ -22,7 +23,7 @@ public:
     {
         if (rStrLine[0] != '1') return false;
 
-        if (rStrLine.length() != 69) return false;
+        if (rStrLine.length() != TLE_CHECK_SUM_START_AND_FINISH_POSITION + 1) return false;
 
         if (!IsWhitespacesValidLine1(rStrLine)) return false;
 
@@ -59,7 +60,7 @@ public:
     {
         if (rStrLine[0] != '2') return false;
 
-        if (rStrLine.length() != 69) return false;
+        if (rStrLine.length() != TLE_CHECK_SUM_START_AND_FINISH_POSITION + 1) return false;
 
         if (!IsWhitespacesValidLine2(rStrLine)) return false;
 
@@ -84,34 +85,34 @@ public:
 
     static bool IsWhitespacesValidLine1(std::string &rStrLine)
     {
-        if (rStrLine[1] != ' ') return false;
-        if (rStrLine[8] != ' ') return false;
-        if (rStrLine[17] != ' ') return false;
-        if (rStrLine[32] != ' ') return false;
-        if (rStrLine[43] != ' ') return false;
-        if (rStrLine[52] != ' ') return false;
-        if (rStrLine[61] != ' ') return false;
-        if (rStrLine[63] != ' ') return false;
+        if (rStrLine[TLE_ID_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_LAUNCH_YEAR_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_ERA_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_FIRST_DERIVATIVE_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_SECOND_DERIVATIVE_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_FLOW_TYPE_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_FLOW_TYPE_FINISH_POSITION] != ' ') return false;
+        if (rStrLine[TLE_NUM_TYPE_START_POSITION - 1] != ' ') return false;
 
         return true;
     }
 
     static bool IsWhitespacesValidLine2(std::string &rStrLine)
     {
-        if (rStrLine[1] != ' ') return false;
-        if (rStrLine[7] != ' ') return false;
-        if (rStrLine[16] != ' ') return false;
-        if (rStrLine[25] != ' ') return false;
-        if (rStrLine[33] != ' ') return false;
-        if (rStrLine[42] != ' ') return false;
-        if (rStrLine[51] != ' ') return false;
+        if (rStrLine[TLE_ID_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_INCLINATION_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_INCLINATION_TO_THE_RIGHT_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_EXCENTRICITY_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_PERIGEE_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_MEAN_ANOMALY_START_POSITION - 1] != ' ') return false;
+        if (rStrLine[TLE_FREQUENCY_START_POSITION - 1] != ' ') return false;
 
         return true;
     }
 
     static bool IsNoradNumValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 2, 6)) return false;
+        if (!_IsDigitField(rStrLine, TLE_ID_START_POSITION, TLE_ID_FINISH_POSITION - 1)) return false;
         return true;
     }
 
@@ -122,119 +123,119 @@ public:
 
     static bool IsLaunchYearValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 9, 10)) return false;
+        if (!_IsDigitField(rStrLine, TLE_LAUNCH_YEAR_START_POSITION, TLE_LAUNCH_YEAR_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsLaunchNumValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 11, 13)) return false;
+        if (!_IsDigitField(rStrLine, TLE_LAUNCH_DATA_START_POSITION, TLE_LAUNCH_DATA_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsLaunchPartValid(std::string &rStrLine)
     {
-        if (!_IsRightWhitespacedField(rStrLine, 14, 16)) return false;
+        if (!_IsRightWhitespacedField(rStrLine, TLE_LAUNCH_TYPE_START_POSITION, TLE_LAUNCH_TYPE_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsEpochYearValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 18, 19)) return false;
+        if (!_IsDigitField(rStrLine, TLE_ERA_START_POSITION, TLE_ERA_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsEpochTimeValid(std::string &rStrLine)
     {
-        if (!_IsRealField(rStrLine, 20, 31, 3)) return false;
+        if (!_IsRealField(rStrLine, TLE_ERA_TYPE_START_POSITION, TLE_ERA_TYPE_FINISH_POSITION - 1, 3)) return false;
         return true;
     }
 
     static bool IsAccelerationValid(std::string &rStrLine)
     {
-        if (!_IsPosNegChar(rStrLine, 33)) return false;
-        if (!_IsRealField(rStrLine, 34, 42, 0)) return false;
+        if (!_IsPosNegChar(rStrLine, TLE_FIRST_DERIVATIVE_START_POSITION)) return false;
+        if (!_IsRealField(rStrLine, TLE_FIRST_DERIVATIVE_START_POSITION + 1, TLE_FIRST_DERIVATIVE_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsVelocitySecondDiffValid(std::string &rStrLine)
     {
-        if (!_IsPosNegChar(rStrLine, 44)) return false;
-        if (!_IsRealExpField(rStrLine, 45, 51, 5)) return false;
+        if (!_IsPosNegChar(rStrLine, TLE_SECOND_DERIVATIVE_START_POSITION)) return false;
+        if (!_IsRealExpField(rStrLine, TLE_SECOND_DERIVATIVE_START_POSITION + 1, TLE_SECOND_DERIVATIVE_FINISH_POSITION - 1, 5)) return false;
         return true;
     }
 
     static bool IsBrakeKoefValid(std::string &rStrLine)
     {
-        if (!_IsPosNegChar(rStrLine, 53)) return false;
-        if (!_IsRealExpField(rStrLine, 54, 60, 5)) return false;
+        if (!_IsPosNegChar(rStrLine, TLE_FLOW_TYPE_START_POSITION)) return false;
+        if (!_IsRealExpField(rStrLine, TLE_FLOW_TYPE_START_POSITION + 1, TLE_FLOW_TYPE_FINISH_POSITION - 1, 5)) return false;
         return true;
     }
 
     static bool IsEpherimidTypeValid(std::string &rStrLine)
     {
-        if (rStrLine[62] != '0') return false;
+        if (rStrLine[TLE_FLOW_TYPE_FINISH_POSITION + 1] != '0') return false;
         return true;
     }
 
     static bool IsVersionValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 64, 67)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_NUM_TYPE_START_POSITION, TLE_NUM_TYPE_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsInclinationValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 8, 10)) return false;
-        if (!_IsRealField(rStrLine, 11, 15, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_INCLINATION_START_POSITION, TLE_INCLINATION_START_POSITION + 2)) return false;
+        if (!_IsRealField(rStrLine, TLE_INCLINATION_START_POSITION + 3, TLE_INCLINATION_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsAscDegreeValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 17, 19)) return false;
-        if (!_IsRealField(rStrLine, 20, 24, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_INCLINATION_TO_THE_RIGHT_START_POSITION, TLE_INCLINATION_TO_THE_RIGHT_START_POSITION + 2)) return false;
+        if (!_IsRealField(rStrLine, TLE_INCLINATION_TO_THE_RIGHT_START_POSITION + 3, TLE_INCLINATION_TO_THE_RIGHT_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsEccentricityValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 26, 32)) return false;
+        if (!_IsDigitField(rStrLine, TLE_EXCENTRICITY_START_POSITION, TLE_EXCENTRICITY_FINISH_POSITION - 1)) return false;
         return true;
     }
 
     static bool IsPercentArgValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 34, 36)) return false;
-        if (!_IsRealField(rStrLine, 37, 41, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_PERIGEE_START_POSITION, TLE_PERIGEE_START_POSITION + 2)) return false;
+        if (!_IsRealField(rStrLine, TLE_PERIGEE_START_POSITION + 3, TLE_PERIGEE_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsMidAnomalityValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 43, 45)) return false;
-        if (!_IsRealField(rStrLine, 46, 50, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_MEAN_ANOMALY_START_POSITION, TLE_MEAN_ANOMALY_START_POSITION + 2)) return false;
+        if (!_IsRealField(rStrLine, TLE_MEAN_ANOMALY_START_POSITION + 3, TLE_MEAN_ANOMALY_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsPeriodFreqValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 52, 53)) return false;
-        if (!_IsRealField(rStrLine, 54, 62, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_FREQUENCY_START_POSITION, TLE_FREQUENCY_START_POSITION + 1)) return false;
+        if (!_IsRealField(rStrLine, TLE_FREQUENCY_START_POSITION + 2, TLE_FREQUENCY_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsPeriodAmntValid(std::string &rStrLine)
     {
-        if (!_IsLeftWhitespacedDigitField(rStrLine, 63, 68)) return false;
-        if (!_IsRealField(rStrLine, 54, 62, 0)) return false;
+        if (!_IsLeftWhitespacedDigitField(rStrLine, TLE_ERA_NUM_START_POSITION, TLE_ERA_NUM_FINISH_POSITION)) return false;
+        if (!_IsRealField(rStrLine, TLE_FREQUENCY_START_POSITION + 2, TLE_FREQUENCY_FINISH_POSITION - 1, 0)) return false;
         return true;
     }
 
     static bool IsControllSumValid(std::string &rStrLine)
     {
-        if (!_IsDigitField(rStrLine, 68, 68)) return false;
-        if (rStrLine[68] != cCheckSum(rStrLine)) return false;
+        if (!_IsDigitField(rStrLine, TLE_CHECK_SUM_START_AND_FINISH_POSITION, TLE_CHECK_SUM_START_AND_FINISH_POSITION)) return false;
+        if (rStrLine[TLE_CHECK_SUM_START_AND_FINISH_POSITION] != cCheckSum(rStrLine)) return false;
         return true;
     }
 
